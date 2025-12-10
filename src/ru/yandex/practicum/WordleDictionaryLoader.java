@@ -1,9 +1,65 @@
 package ru.yandex.practicum;
 
-/*
-этот класс содержит в себе всю рутину по работе с файлами словарей и с кодировками
-    ему нужны методы по загрузке списка слов из файла по имени файла
-    на выходе должен быть класс WordleDictionary
- */
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.util.*;
+
 public class WordleDictionaryLoader {
+    private final PrintWriter log;
+
+    public WordleDictionaryLoader(PrintWriter log) {
+        this.log = log;
+    }
+
+    public WordleDictionary loadDictionary(String filename) throws IOException {
+        Path path = Paths.get(filename);
+        logMessage("Попытка загрузки словаря из: " + path.toAbsolutePath());
+
+        if (!Files.exists(path)) {
+            throw new IOException("Файл не найден: " + path.toAbsolutePath());
+        }
+
+        if (!Files.isReadable(path)) {
+            throw new IOException("Нет прав на чтение: " + path.toAbsolutePath());
+        }
+
+        Set<String> wordSet = new LinkedHashSet<>();
+
+        try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+            String line;
+            int lineCount = 0;
+            int validCount = 0;
+
+            while ((line = reader.readLine()) != null) {
+                lineCount++;
+                String normalized = WordleDictionary.normalizeWord(line);
+
+                if (normalized.length() == 5 && normalized.matches("[а-я]+")) {
+                    if (wordSet.add(normalized)) {
+                        validCount++;
+                    }
+                } else if (!normalized.isBlank()) {
+                    logMessage("  Пропущено: " + line + " (не 5 букв или не кириллица)");
+                }
+            }
+
+            logMessage("Загружено строк: " + lineCount + ", валидных слов: " + validCount + ", уникальных: " + wordSet.size());
+        }
+
+        if (wordSet.isEmpty()) {
+            throw new IOException("Файл не содержит ни одного корректного 5-буквенного слова.");
+        }
+
+        return new WordleDictionary(new ArrayList<>(wordSet));
+    }
+
+    private void logMessage(String message) {
+        if (log != null) {
+            log.println("[Loader] " + message);
+            log.flush();
+        }
+    }
 }
