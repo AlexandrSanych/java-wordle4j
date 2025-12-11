@@ -40,7 +40,8 @@ public class Wordle {
     }
 
     static PrintWriter createLogger() throws IOException {
-        Path logPath = Paths.get(LOG_FILE);
+        // ИЗМЕНЕНИЕ: В реальной игре пишем в файл
+        Path logPath = Paths.get("wordle_game.log");
         boolean append = Files.exists(logPath);
         return new PrintWriter(
                 Files.newBufferedWriter(logPath,

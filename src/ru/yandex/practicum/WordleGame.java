@@ -98,13 +98,10 @@ public class WordleGame {
 
     public String getHint() {
         List<String> allWords = dictionary.getAllWords();
-        if (allWords.isEmpty()) {
-            return null;
-        }
-
         List<String> availableWords = new ArrayList<>();
+
         for (String word : allWords) {
-            if (!guessedWords.contains(word) && !word.equals(answer)) {
+            if (isWordSuitableForHint(word)) {
                 availableWords.add(word);
             }
         }
@@ -114,6 +111,47 @@ public class WordleGame {
         }
 
         return availableWords.get(new Random().nextInt(availableWords.size()));
+    }
+
+    private boolean isWordSuitableForHint(String word) {
+        // 1. Не использовалось ранее и не является ответом
+        if (guessedWords.contains(word) || word.equals(answer)) {
+            return false;
+        }
+
+        // 2. Не должно содержать букв, которых точно нет в загаданном слове
+        for (char c : wrongLetters) {
+            if (word.indexOf(c) != -1) {
+                return false;
+            }
+        }
+
+        // 3. Должно содержать все буквы, которые точно есть в загаданном слове
+        for (char c : correctLetters) {
+            if (word.indexOf(c) == -1) {
+                return false;
+            }
+        }
+
+        // 4. Буквы на известных правильных позициях должны совпадать
+        for (Map.Entry<Integer, Character> entry : correctPositions.entrySet()) {
+            int pos = entry.getKey();
+            char expected = entry.getValue();
+            if (word.charAt(pos) != expected) {
+                return false;
+            }
+        }
+
+        // 5. Буквы не должны быть на известных неправильных позициях
+        for (Map.Entry<Integer, Set<Character>> entry : wrongPositions.entrySet()) {
+            int pos = entry.getKey();
+            Set<Character> forbidden = entry.getValue();
+            if (forbidden.contains(word.charAt(pos))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public boolean isWordGuessed() {
@@ -162,5 +200,18 @@ public class WordleGame {
             copy.put(entry.getKey(), new HashSet<>(entry.getValue()));
         }
         return copy;
+    }
+
+    // Опционально: метод для отображения текущего паттерна
+    public String getCurrentPattern() {
+        char[] pattern = new char[WORD_LENGTH];
+        Arrays.fill(pattern, '_');
+        for (Map.Entry<Integer, Character> entry : correctPositions.entrySet()) {
+            int pos = entry.getKey();
+            if (pos >= 0 && pos < WORD_LENGTH) {
+                pattern[pos] = entry.getValue();
+            }
+        }
+        return new String(pattern);
     }
 }
