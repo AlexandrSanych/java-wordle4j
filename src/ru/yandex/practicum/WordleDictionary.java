@@ -85,7 +85,7 @@ public class WordleDictionary {
 
         // Шаг 2: Находим буквы на других местах
         for (int i = 0; i < 5; i++) {
-            if (guessUsed[i]) continue; // Уже обработано
+            if (guessUsed[i]) continue;
 
             char guessChar = guess.charAt(i);
 

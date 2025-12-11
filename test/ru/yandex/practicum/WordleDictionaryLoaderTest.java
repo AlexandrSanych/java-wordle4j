@@ -26,7 +26,7 @@ public class WordleDictionaryLoaderTest {
                 гонец
                 """.getBytes());
 
-        PrintWriter log = new PrintWriter(System.out); // можно использовать dummy log
+        PrintWriter log = new PrintWriter(System.out);
         WordleDictionaryLoader loader = new WordleDictionaryLoader(log);
         WordleDictionary dictionary = loader.loadDictionary(file.toString());
 

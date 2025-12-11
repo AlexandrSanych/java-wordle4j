@@ -46,7 +46,8 @@ public class WordleDictionaryLoader {
                 }
             }
 
-            logMessage("Загружено строк: " + lineCount + ", валидных слов: " + validCount + ", уникальных: " + wordSet.size());
+            logMessage("Загружено строк: " + lineCount + ", валидных слов: " + validCount + "," +
+                    " уникальных: " + wordSet.size());
         }
 
         if (wordSet.isEmpty()) {

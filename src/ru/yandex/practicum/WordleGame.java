@@ -44,7 +44,8 @@ public class WordleGame {
         log.println("=".repeat(50));
     }
 
-    public String checkWord(String word) throws WordNotFoundInDictionaryException, InvalidWordException {
+    public String checkWord(String word) throws WordNotFoundInDictionaryException,
+            InvalidWordException {
         String normalizedWord = WordleDictionary.normalizeWord(word);
 
         if (guessedWords.contains(normalizedWord)) {
@@ -202,7 +203,7 @@ public class WordleGame {
         return copy;
     }
 
-    // Опционально: метод для отображения текущего паттерна
+    //  метод для отображения текущего паттерна
     public String getCurrentPattern() {
         char[] pattern = new char[WORD_LENGTH];
         Arrays.fill(pattern, '_');

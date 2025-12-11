@@ -26,7 +26,7 @@ public class WordleTest {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
 
-        // Запускаем в отдельном потоке, т.к. main вызывает System.exit
+
         Thread gameThread = new Thread(() -> {
             try {
                 Wordle.main(new String[]{});
@@ -53,7 +53,8 @@ public class WordleTest {
     void testHandleCriticalError() {
         PrintWriter log = new PrintWriter(new StringWriter());
         try {
-            Method method = Wordle.class.getDeclaredMethod("handleCriticalError", Exception.class, PrintWriter.class);
+            Method method = Wordle.class.getDeclaredMethod("handleCriticalError",
+                    Exception.class, PrintWriter.class);
             method.setAccessible(true);
             method.invoke(null, new RuntimeException("Test"), log);
         } catch (Exception e) {
