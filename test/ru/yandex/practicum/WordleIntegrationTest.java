@@ -32,39 +32,44 @@ class WordleIntegrationTest {
         StringWriter gameLog = new StringWriter();
         WordleGame game = new WordleGame(dictionary, new PrintWriter(gameLog));
 
-        // 4. Получаем загаданное слово
-        String answer = game.getAnswer();
+        // 4. Получаем загаданное слово через рефлексию (не изменяя состояние)
+        Field answerField = WordleGame.class.getDeclaredField("answer");
+        answerField.setAccessible(true);
+        String answer = (String) answerField.get(game);
+
         assertNotNull(answer);
         assertEquals(5, answer.length());
         assertTrue(dictionary.contains(answer));
 
-        // 5. Делаем попытку (не угадываем сразу)
+        // 5. Проверяем, что игра не завершена в начале
+        assertFalse(game.isGameOver());
+
+        // 6. Делаем попытку (не угадываем сразу)
         String result = game.checkWord("гонец");
         assertNotNull(result);
         assertEquals(5, result.length());
         assertEquals(5, game.getAttemptsRemaining());
-        assertFalse(game.isGameOver());
+        assertFalse(game.isGameOver()); // Игра не должна быть завершена
 
-        // 6. Пробуем получить подсказку
+        // 7. Пробуем получить подсказку
         String hint = game.getHint();
         if (hint != null) {
             assertEquals(5, hint.length());
             assertTrue(dictionary.contains(hint));
         }
 
-        // 7. Угадываем слово
+        // 8. Угадываем слово
         String winResult = game.checkWord(answer);
         assertEquals("+++++", winResult);
         assertTrue(game.isWordGuessed());
-        assertTrue(game.isGameOver());
+        assertTrue(game.isGameOver()); // Теперь игра должна быть завершена
 
-        // 8. Проверяем историю
+        // 9. Проверяем историю
         List<String> guessedWords = game.getGuessedWords();
         assertEquals(2, guessedWords.size());
         assertEquals("гонец", guessedWords.get(0));
         assertEquals(answer, guessedWords.get(1));
     }
-
     @Test
     void testWordNormalizationInGame() throws Exception {
         Path dictFile = tempDir.resolve("dict2.txt");
