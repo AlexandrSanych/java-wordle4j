@@ -82,7 +82,6 @@ public class Wordle {
 
             String input = scanner.nextLine().trim();
 
-            // Пустой ввод = подсказка
             if (input.isEmpty()) {
                 String hint = game.getHint();
                 if (hint != null) {
@@ -127,8 +126,9 @@ public class Wordle {
             System.out.println("😔 К сожалению, вы не угадали слово.");
             System.out.println("Загаданное слово было: " + game.getAnswer());
         } else {
+            // Используем MAX_ATTEMPTS вместо getMaxAttempts()
             System.out.println("🎉 ПОБЕДА! Слово угадано за " +
-                    (game.getMaxAttempts() - game.getAttemptsRemaining()) + " попыток!");
+                    (WordleGame.MAX_ATTEMPTS - game.getAttemptsRemaining()) + " попыток!");
         }
 
         System.out.println("\nИстория попыток:");
@@ -143,7 +143,8 @@ public class Wordle {
 
         log.println("Игра завершена. Угадано: " + game.isWordGuessed());
         log.println("Загаданное слово: " + game.getAnswer());
-        log.println("Попыток использовано: " + (game.getMaxAttempts() - game.getAttemptsRemaining()));
+        // Используем MAX_ATTEMPTS вместо getMaxAttempts()
+        log.println("Попыток использовано: " + (WordleGame.MAX_ATTEMPTS - game.getAttemptsRemaining()));
         log.println("Лог сохранен в: " + LOG_FILE);
     }
 

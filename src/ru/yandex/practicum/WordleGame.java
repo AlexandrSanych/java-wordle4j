@@ -179,10 +179,6 @@ public class WordleGame {
         return new ArrayList<>(hints);
     }
 
-    public int getMaxAttempts() {
-        return MAX_ATTEMPTS;
-    }
-
     public Set<Character> getCorrectLetters() {
         return new HashSet<>(correctLetters);
     }
