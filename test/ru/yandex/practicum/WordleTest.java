@@ -13,10 +13,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class WordleTest {
 
     @TempDir
-    Path tempDir;
+   public Path tempDir;
 
     @Test
-    void testRunGame() throws IOException {
+   public void testRunGame() throws IOException {
         Path dict = tempDir.resolve("words_ru.txt");
         Files.write(dict, "герой\nбанан\nпчела\nслово\nгонец".getBytes());
 
@@ -50,7 +50,7 @@ public class WordleTest {
     }
 
     @Test
-    void testHandleCriticalError() {
+    public void testHandleCriticalError() {
         PrintWriter log = new PrintWriter(new StringWriter());
         try {
             Method method = Wordle.class.getDeclaredMethod("handleCriticalError",

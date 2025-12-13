@@ -17,6 +17,7 @@ public class WordleDictionaryLoader {
     public WordleDictionary loadDictionary(String filename) throws IOException {
         Path path = Paths.get(filename);
         logMessage("Попытка загрузки словаря из: " + path.toAbsolutePath());
+        logMessage("Ожидаемая длина слова: " + WordleGame.WORD_LENGTH);
 
         if (!Files.exists(path)) {
             throw new IOException("Файл не найден: " + path.toAbsolutePath());
@@ -37,24 +38,27 @@ public class WordleDictionaryLoader {
                 lineCount++;
                 String normalized = WordleDictionary.normalizeWord(line);
 
-                if (normalized.length() == 5 && normalized.matches("[а-я]+")) {
+                if (normalized.length() == WordleGame.WORD_LENGTH && normalized.matches("[а-я]+")) {
                     if (wordSet.add(normalized)) {
                         validCount++;
                     }
                 } else if (!normalized.isBlank()) {
-                    logMessage("  Пропущено: " + line + " (не 5 букв или не кириллица)");
+                    logMessage("  Пропущено: " + line + " (длина: " + normalized.length() +
+                            ", требуется: " + WordleGame.WORD_LENGTH + ")");
                 }
             }
 
-            logMessage("Загружено строк: " + lineCount + ", валидных слов: " + validCount + "," +
-                    " уникальных: " + wordSet.size());
+            logMessage("Загружено строк: " + lineCount +
+                    ", валидных слов: " + validCount +
+                    ", уникальных: " + wordSet.size());
         }
 
         if (wordSet.isEmpty()) {
-            throw new IOException("Файл не содержит ни одного корректного 5-буквенного слова.");
+            throw new IOException("Файл не содержит ни одного корректного " +
+                    WordleGame.WORD_LENGTH + "-буквенного слова.");
         }
 
-        return new WordleDictionary(new ArrayList<>(wordSet));
+        return new WordleDictionary(new ArrayList<>(wordSet), log);
     }
 
     private void logMessage(String message) {

@@ -3,6 +3,8 @@ package ru.yandex.practicum;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.exception.InvalidWordException;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -13,13 +15,15 @@ import static ru.yandex.practicum.WordleDictionary.normalizeWord;
 
 public class WordleDictionaryTest {
 
+    private PrintWriter log = new PrintWriter(new StringWriter());
+
     private final WordleDictionary dictionary = new WordleDictionary(Arrays.asList(
             "банан", "герой", "гонец", "слово", "пчела",
             "банка", "абвгд", "горох", "горка", "слон", "второй"
-    ));
+    ), log);
 
     @Test
-    void testNormalizeWord() {
+    public void testNormalizeWord() {
         assertEquals("банан", normalizeWord("БАНАН"));
         assertEquals("банан", normalizeWord("банан"));
         assertEquals("банае", normalizeWord("банаё"));
@@ -30,7 +34,7 @@ public class WordleDictionaryTest {
     }
 
     @Test
-    void testContains() {
+    public void testContains() {
         assertTrue(dictionary.contains("Герой"));
         assertTrue(dictionary.contains("гЕрОй"));
         assertTrue(dictionary.contains("герой"));
@@ -40,7 +44,7 @@ public class WordleDictionaryTest {
     }
 
     @Test
-    void testValidateWord() throws InvalidWordException {
+    public void testValidateWord() throws InvalidWordException {
         dictionary.validateWord("герой");
         dictionary.validateWord("ГЕРОЙ");
         dictionary.validateWord("гонец");
@@ -53,7 +57,7 @@ public class WordleDictionaryTest {
     }
 
     @Test
-    void testAnalyzeWord() {
+    public void testAnalyzeWord() {
         assertEquals("+++++", WordleDictionary.analyzeWord("герой", "герой"));
         assertEquals("+^-^-", WordleDictionary.analyzeWord("гонец", "герой"));
         assertEquals("^----", WordleDictionary.analyzeWord("абвгд", "герой"));
@@ -74,7 +78,7 @@ public class WordleDictionaryTest {
     }
 
     @Test
-    void testFindSuggestions() {
+    public void testFindSuggestions() {
         Set<Character> mustContain = Set.of('г', 'о');
         Set<Character> mustNotContain = Set.of('й');
         String pattern = "г___о";
@@ -85,7 +89,7 @@ public class WordleDictionaryTest {
     }
 
     @Test
-    void testFindSuggestionsOptimized() {
+    public void testFindSuggestionsOptimized() {
         Map<Integer, Character> correctPositions = Map.of(0, 'г', 4, 'ц');
         Map<Integer, Set<Character>> wrongPositions = Map.of(1, Set.of('е'));
 
@@ -97,7 +101,7 @@ public class WordleDictionaryTest {
     }
 
     @Test
-    void testGetLetterFrequency() {
+    public void testGetLetterFrequency() {
         Map<Character, Integer> freq = dictionary.getLetterFrequency();
         assertNotNull(freq.get('а'));
         assertNotNull(freq.get('о'));
@@ -105,7 +109,7 @@ public class WordleDictionaryTest {
     }
 
     @Test
-    void testGetAllWords() {
+   public void testGetAllWords() {
         List<String> words = dictionary.getAllWords();
         assertEquals(9, words.size());
         assertTrue(words.contains("герой"));
@@ -117,7 +121,7 @@ public class WordleDictionaryTest {
     }
 
     @Test
-    void testGetRandomWord() {
+    public void testGetRandomWord() {
         String randomWord = dictionary.getRandomWord();
         assertNotNull(randomWord);
         assertEquals(5, randomWord.length());
@@ -125,7 +129,7 @@ public class WordleDictionaryTest {
     }
 
     @Test
-    void testSize() {
+   public void testSize() {
         assertEquals(9, dictionary.size());
     }
 }

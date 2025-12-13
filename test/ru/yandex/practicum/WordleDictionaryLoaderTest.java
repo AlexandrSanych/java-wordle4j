@@ -13,10 +13,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class WordleDictionaryLoaderTest {
 
     @TempDir
-    Path tempDir;
+   public Path tempDir;
 
     @Test
-    void testLoadValidDictionary() throws IOException {
+    public void testLoadValidDictionary() throws IOException {
         Path file = tempDir.resolve("words_test.txt");
         Files.write(file, """
                 герой
@@ -36,7 +36,7 @@ public class WordleDictionaryLoaderTest {
     }
 
     @Test
-    void testLoadWithInvalidWords() throws IOException {
+   public void testLoadWithInvalidWords() throws IOException {
         Path file = tempDir.resolve("words_mixed.txt");
         Files.write(file, """
                 Герой
@@ -59,7 +59,7 @@ public class WordleDictionaryLoaderTest {
     }
 
     @Test
-    void testLoadNonExistentFile() {
+    public void testLoadNonExistentFile() {
         PrintWriter log = new PrintWriter(System.out);
         WordleDictionaryLoader loader = new WordleDictionaryLoader(log);
 
@@ -67,7 +67,7 @@ public class WordleDictionaryLoaderTest {
     }
 
     @Test
-    void testLoadEmptyFile() throws IOException {
+    public void testLoadEmptyFile() throws IOException {
         Path file = tempDir.resolve("empty.txt");
         Files.createFile(file);
 
@@ -78,7 +78,7 @@ public class WordleDictionaryLoaderTest {
     }
 
     @Test
-    void testLoadFileWithDuplicates() throws IOException {
+    public void testLoadFileWithDuplicates() throws IOException {
         Path file = tempDir.resolve("duplicates.txt");
         Files.write(file, """
                 герой

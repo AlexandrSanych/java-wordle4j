@@ -21,7 +21,7 @@ public class WordleGame {
     private final Map<Integer, Set<Character>> wrongPositions = new HashMap<>();
 
     public static final int MAX_ATTEMPTS = 6;
-    private static final int WORD_LENGTH = 5;
+    public static final int WORD_LENGTH = 5;
 
     public WordleGame(WordleDictionary dictionary, PrintWriter log) {
         if (dictionary == null) throw new IllegalArgumentException("Словарь не может быть null");
@@ -203,7 +203,7 @@ public class WordleGame {
         return copy;
     }
 
-    //  метод для отображения текущего паттерна
+    // метод для отображения текущего паттерна
     public String getCurrentPattern() {
         char[] pattern = new char[WORD_LENGTH];
         Arrays.fill(pattern, '_');

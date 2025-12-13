@@ -20,18 +20,12 @@ public class Wordle {
         Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
 
         while (playAgain) {
-            PrintWriter log = null;
-            try {
-                log = createLogger();
+            try (PrintWriter log = createLogger()) {
                 runGame(log, scanner);
                 playAgain = askForRestart(scanner, log);
             } catch (Exception e) {
-                handleCriticalError(e, log);
+                handleCriticalError(e, null);
                 playAgain = false;
-            } finally {
-                if (log != null) {
-                    log.close();
-                }
             }
         }
 
@@ -40,8 +34,7 @@ public class Wordle {
     }
 
     static PrintWriter createLogger() throws IOException {
-        // ИЗМЕНЕНИЕ: В реальной игре пишем в файл
-        Path logPath = Paths.get("wordle_game.log");
+        Path logPath = Paths.get(LOG_FILE);
         boolean append = Files.exists(logPath);
         return new PrintWriter(
                 Files.newBufferedWriter(logPath,
@@ -53,6 +46,8 @@ public class Wordle {
     static void runGame(PrintWriter log, Scanner scanner) throws IOException {
         log.println("\n" + "=".repeat(50));
         log.println("Запуск Wordle " + java.time.LocalDateTime.now());
+        log.println("Словарь: " + DICTIONARY_FILE);
+        log.println("Лог-файл: " + LOG_FILE);
         log.println("=".repeat(50));
 
         WordleDictionaryLoader loader = new WordleDictionaryLoader(log);
@@ -67,7 +62,8 @@ public class Wordle {
     static void showWelcomeMessage() {
         System.out.println("\n" + "=".repeat(50));
         System.out.println("Добро пожаловать в Wordle на русском языке!");
-        System.out.println("У вас есть 6 попыток, чтобы угадать 5-буквенное слово.");
+        System.out.println("У вас есть " + WordleGame.MAX_ATTEMPTS + " попыток, чтобы угадать " +
+                WordleGame.WORD_LENGTH + "-буквенное слово.");
         System.out.println("=".repeat(50));
         System.out.println("Подсказки:");
         System.out.println("  + — буква на правильном месте");
@@ -94,6 +90,7 @@ public class Wordle {
                     log.println("Игрок запросил подсказку: " + hint);
                 } else {
                     System.out.println("Подсказки временно недоступны.\n");
+                    log.println("Игрок запросил подсказку, но подсказки недоступны");
                 }
                 continue;
             }
@@ -147,6 +144,7 @@ public class Wordle {
         log.println("Игра завершена. Угадано: " + game.isWordGuessed());
         log.println("Загаданное слово: " + game.getAnswer());
         log.println("Попыток использовано: " + (game.getMaxAttempts() - game.getAttemptsRemaining()));
+        log.println("Лог сохранен в: " + LOG_FILE);
     }
 
     static boolean askForRestart(Scanner scanner, PrintWriter log) {
@@ -173,6 +171,9 @@ public class Wordle {
                 new FileWriter(CRASH_LOG_FILE, StandardCharsets.UTF_8, true))) {
             errorLog.println("\n" + "=".repeat(80));
             errorLog.println("CRASH " + java.time.LocalDateTime.now());
+            errorLog.println("Словарь: " + DICTIONARY_FILE);
+            errorLog.println("Лог-файл: " + LOG_FILE);
+            errorLog.println("Краш-лог: " + CRASH_LOG_FILE);
             errorLog.println("Message: " + e.getMessage());
             errorLog.println("Class: " + e.getClass().getName());
 
@@ -191,8 +192,9 @@ public class Wordle {
         System.err.println("\nИгра не может быть запущена.");
         System.err.println("Пожалуйста, проверьте:");
         System.err.println("1. Существует ли файл словаря: " + DICTIONARY_FILE);
-        System.err.println("2. Содержит ли он 5-буквенные слова");
+        System.err.println("2. Содержит ли он " + WordleGame.WORD_LENGTH + "-буквенные слова");
         System.err.println("3. Доступны ли права на чтение файла");
+        System.err.println("4. Проблема записана в файл: " + CRASH_LOG_FILE);
         System.err.println("=".repeat(50));
 
         if (log != null) {
