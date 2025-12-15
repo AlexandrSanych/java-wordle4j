@@ -33,7 +33,7 @@ public class Wordle {
         scanner.close();
     }
 
-    static PrintWriter createLogger() throws IOException {
+     private static PrintWriter createLogger() throws IOException {
         Path logPath = Paths.get(LOG_FILE);
         boolean append = Files.exists(logPath);
         return new PrintWriter(
@@ -43,7 +43,7 @@ public class Wordle {
         );
     }
 
-    static void runGame(PrintWriter log, Scanner scanner) throws IOException {
+  private static void runGame(PrintWriter log, Scanner scanner) throws IOException {
         log.println("\n" + "=".repeat(50));
         log.println("Запуск Wordle " + java.time.LocalDateTime.now());
         log.println("Словарь: " + DICTIONARY_FILE);
@@ -59,7 +59,7 @@ public class Wordle {
         showResults(game, log);
     }
 
-    static void showWelcomeMessage() {
+     private static void showWelcomeMessage() {
         System.out.println("\n" + "=".repeat(50));
         System.out.println("Добро пожаловать в Wordle на русском языке!");
         System.out.println("У вас есть " + WordleGame.MAX_ATTEMPTS + " попыток, чтобы угадать " +
@@ -75,7 +75,7 @@ public class Wordle {
         System.out.println("=".repeat(50) + "\n");
     }
 
-    static void gameLoop(WordleGame game, Scanner scanner, PrintWriter log) {
+     private static void gameLoop(WordleGame game, Scanner scanner, PrintWriter log) {
         while (!game.isGameOver()) {
             System.out.print("Введите слово (или нажмите Enter для подсказки): ");
             if (!scanner.hasNextLine()) return;
@@ -119,7 +119,7 @@ public class Wordle {
         }
     }
 
-    static void showResults(WordleGame game, PrintWriter log) {
+     private static void showResults(WordleGame game, PrintWriter log) {
         System.out.println("\n" + "=".repeat(50));
 
         if (!game.isWordGuessed()) {
@@ -143,12 +143,11 @@ public class Wordle {
 
         log.println("Игра завершена. Угадано: " + game.isWordGuessed());
         log.println("Загаданное слово: " + game.getAnswer());
-        // Используем MAX_ATTEMPTS вместо getMaxAttempts()
         log.println("Попыток использовано: " + (WordleGame.MAX_ATTEMPTS - game.getAttemptsRemaining()));
         log.println("Лог сохранен в: " + LOG_FILE);
     }
 
-    static boolean askForRestart(Scanner scanner, PrintWriter log) {
+     private static boolean askForRestart(Scanner scanner, PrintWriter log) {
         System.out.print("\nХотите сыграть ещё раз? (да/нет): ");
         String response = scanner.nextLine().trim().toLowerCase();
 
@@ -167,7 +166,7 @@ public class Wordle {
         return restart;
     }
 
-    static void handleCriticalError(Exception e, PrintWriter log) {
+     private static void handleCriticalError(Exception e, PrintWriter log) {
         try (PrintWriter errorLog = new PrintWriter(
                 new FileWriter(CRASH_LOG_FILE, StandardCharsets.UTF_8, true))) {
             errorLog.println("\n" + "=".repeat(80));

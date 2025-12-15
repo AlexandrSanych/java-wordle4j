@@ -127,8 +127,7 @@ public class WordleDictionary {
             }
         }
 
-        String hint = new String(result);
-        return hint;
+        return new String(result);
     }
 
     public static String normalizeWord(String word) {

@@ -156,7 +156,7 @@ public class WordleGame {
     }
 
     public boolean isWordGuessed() {
-        return !guessedWords.isEmpty() && "+++++".equals(hints.get(hints.size() - 1));
+        return !guessedWords.isEmpty() && "+++++".equals(hints.getLast());
     }
 
     public boolean isGameOver() {
